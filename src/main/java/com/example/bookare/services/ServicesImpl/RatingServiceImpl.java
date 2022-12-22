@@ -62,9 +62,13 @@ public class RatingServiceImpl implements RatingService {
                     .message("Comment Saved!")
                     .build();
         } else { //aks holda message jo'natiladi
+
+            String warningMessage = "The rater with this id: " + rater_id
+                    + " is already have rated this user: %s !" + user_id;
+
             return ApiResponse.builder()
                     .success(false)
-                    .message("warningMessage!") // I have to make warning message for sending!
+                    .message(warningMessage)
                     .build();
         }
     }
