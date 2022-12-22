@@ -1,10 +1,5 @@
 package com.example.bookare.exceptions;
 
-/**
- * project: my_part
- * author: Sardor Urokov
- * created at 5:17 PM on 21/Dec/2022
- **/
 public class ResourceNotFoundException extends RuntimeException {
 
     //programmani to'xtatmaydi

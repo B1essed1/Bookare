@@ -12,6 +12,8 @@ import com.example.bookare.services.RatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class RatingServiceImpl implements RatingService {
@@ -24,44 +26,59 @@ public class RatingServiceImpl implements RatingService {
     public ApiResponse<?> saveRating(RatingDto ratingDto) {
         Ratings rating = new Ratings();
 
+        Integer maxRating = 5; //rating maximum 5ga teng bo'lishi kerak
+        Long user_id = ratingDto.getUser_id();
+        Long rater_id = ratingDto.getRater_id();
+
         Users rater = usersRepository
-                .findById(ratingDto.getRater_id())
-                .orElseThrow(() -> new ResourceNotFoundException("user", "id", ratingDto.getRater_id()));
+                .findById(rater_id)
+                .orElseThrow(() -> new ResourceNotFoundException("user", "id", rater_id));
 
         Users user = usersRepository
-                .findById(ratingDto.getUser_id())
-                .orElseThrow(() -> new ResourceNotFoundException("user", "id", ratingDto.getUser_id()));
+                .findById(user_id)
+                .orElseThrow(() -> new ResourceNotFoundException("user", "id", user_id));
 
+        boolean isRated = ratingsRepository
+                .findRatingsByRaterIdAndUserId(rater_id, user_id); //userga aynan shu rater tomonidan avval rate berilganmi yoki yo'qligini bazadan qidiradi
+
+        if (!isRated && ratingDto.getRating() <= maxRating) { //agar ushbu id(user_id) lik userga shu id(rater_id) lik rater tomonidan avval rating berilmagan bo'lsa va rating 5 dan kichik bo'lsa save qiladi
             rating.setRater(rater);
             rating.setUser(user);
             rating.setRate(ratingDto.getRating());
-            if (rating.getComment() != null){
+            if (rating.getComment() != null) {
+                rating.setComment(ratingDto.getComment());
+
                 CommentDto commentDto = new CommentDto();
                 commentDto.setComment(ratingDto.getComment());
-                commentDto.setUser_id(ratingDto.getUser_id());
-                commentDto.setCommenter_id(ratingDto.getRater_id());
+                commentDto.setUser_id(user_id);
+                commentDto.setCommenter_id(rater_id);
                 commentService.saveComment(commentDto);
             }
-            rating.setComment(ratingDto.getComment());
             Ratings save = ratingsRepository.save(rating);
 
-       return ApiResponse.builder()
-                .data(save)
-                .success(true)
-                .message("Comment Saved!")
-                .build();
+            return ApiResponse.builder()
+                    .data(save)
+                    .success(true)
+                    .message("Comment Saved!")
+                    .build();
+        } else { //aks holda message jo'natiladi
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("warningMessage!") // I have to make warning message for sending!
+                    .build();
+        }
     }
 
     @Override
     public ApiResponse<?> getOneUserRating(Long user_id) {
-        Long user_rating = (Long) ratingsRepository
+        float user_rating = (float) ratingsRepository
                 .getUserRating(user_id)
                 .orElseThrow(() -> new ResourceNotFoundException("user", "id", user_id));
 
         return ApiResponse.builder()
                 .data(user_rating)
                 .success(true)
-                .message("GetOne")
+                .message("OneUserRating")
                 .build();
     }
 }

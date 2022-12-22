@@ -40,7 +40,7 @@ public class RegistrationController {
      */
 
 
-     /***
+    /***
      *  TODO
      * In order to start, used only required fields to implement registration
      * Should update when changes will be done!
@@ -49,9 +49,9 @@ public class RegistrationController {
 
     @PostMapping("registration")
     @Transactional
-    public ResponseEntity<?> registration(@RequestBody RegUserDto dto){
-        ResponseDto<UsersReserve> response= reserveUsersService.castToUsers(dto);
-        if (response.getIsError()){
+    public ResponseEntity<?> registration(@RequestBody RegUserDto dto) {
+        ResponseDto<UsersReserve> response = reserveUsersService.castToUsers(dto);
+        if (response.getIsError()) {
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(response.getMessage());
         }
 
@@ -64,31 +64,36 @@ public class RegistrationController {
         mailMessage.setTo(reserve.getEmail());
         javaMailSender.send(mailMessage);
 
-        return  ResponseEntity.status(HttpStatus.CREATED).body(response.getData().getEmail());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response.getData().getEmail());
     }
 
 
     @PostMapping("confirm")
-    public ResponseEntity<?> confirmation(@RequestBody ConfirmRegDto dto){
+    public ResponseEntity<?> confirmation(@RequestBody ConfirmRegDto dto) {
         Optional<UsersReserve> reserve = reserveRepository.findUsersReserveByEmail(dto.getEmail());
-        if (reserve.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bunday emaildagi foydalanuvchi mavjud emas");
+        if (reserve.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bunday emaildagi foydalanuvchi mavjud emas");
 
-        if (Objects.equals(reserve.get().getOtp(), dto.getOtp())){
-            Long diff =  new Date().getTime() - reserve.get().getCreatedDate().getTime();
-            if (diff<=120000){
+        if (Objects.equals(reserve.get().getOtp(), dto.getOtp())) {
+            Long diff = new Date().getTime() - reserve.get().getCreatedDate().getTime();
+            if (diff <= 120000) {
 
                 Users users = usersService.castToUsers(reserve.get());
                 usersService.save(users);
-                return ResponseEntity.status(HttpStatus.CREATED).body(JwtTokenCreator.createJwtToken(users));
-            }else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("otp time out error");
+
+                return ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .body(JwtTokenCreator.createJwtToken(users));
+            } else {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("otp time out error");
             }
 
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("otp xato kiritilgan!");
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body("otp xato kiritilgan!");
         }
-
-
     }
-
 }

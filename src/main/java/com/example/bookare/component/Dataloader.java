@@ -30,19 +30,19 @@ public class Dataloader implements CommandLineRunner {
     public void run(String... args) {
         if (mode.equals("always")) {
 
-            List<Users> users = new ArrayList<>();
-            Roles role = rolesRepository.save(new Roles(1L, "USER", users));
-
-            List<Roles> roles = Collections.singletonList(new Roles());
-            Users user1 = usersRepository.save(new Users(1L, "Tester", "Testerov", passwordEncoder.encode("123"), "test1@gmail.com", roles));
-            Users user2 = usersRepository.save(new Users(2L, "Tester", "Testerov", passwordEncoder.encode("123"), "test2@gmail.com", roles));
-
-            users.add(user1);
-            users.add(user2);
-
-            Ratings rating1 = ratingRepository.save(new Ratings(1L, 4, "test1", user1, user2, new Date()));
-            Ratings rating2 = ratingRepository.save(new Ratings(2L, 4, "test2", user1, user2, new Date()));
-            Ratings rating3 = ratingRepository.save(new Ratings(3L, 3, "test3", user1, user2, new Date()));
+//            List<Users> users = new ArrayList<>();
+//            Roles role = rolesRepository.save(new Roles(1L, "USER", users));
+//
+//            List<Roles> roles = Collections.singletonList(new Roles());
+//            Users user1 = usersRepository.save(new Users(1L, "Tester", "Testerov", passwordEncoder.encode("123"), "test1@gmail.com", roles));
+//            Users user2 = usersRepository.save(new Users(2L, "Tester", "Testerov", passwordEncoder.encode("123"), "test2@gmail.com", roles));
+//
+//            users.add(user1);
+//            users.add(user2);
+//
+//            Ratings rating1 = ratingRepository.save(new Ratings(1L, 4, "test1", user1, user2, new Date()));
+//            Ratings rating2 = ratingRepository.save(new Ratings(2L, 4, "test2", user1, user2, new Date()));
+//            Ratings rating3 = ratingRepository.save(new Ratings(3L, 3, "test3", user1, user2, new Date()));
         }
     }
 }
