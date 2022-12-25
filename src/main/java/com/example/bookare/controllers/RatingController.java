@@ -18,16 +18,26 @@ public class RatingController {
     private final RatingServiceImpl ratingService;
 
     @GetMapping("{id}")
-    public ResponseEntity<?> getOneUserRating(@PathVariable Long id){
+    public ResponseEntity<?> getOneUserRating(@PathVariable Long id) {
         ApiResponse<?> userRating = ratingService.getOneUserRating(id);
         return new ResponseEntity<>(userRating, HttpStatus.OK);
     }
 
     @PostMapping("saveRating")
-    public ResponseEntity<?> saveUserRating (@RequestBody RatingDto ratingDto) {
-        ApiResponse<?> apiResponse = ratingService.saveRating(ratingDto);
-        return ResponseEntity
-                .status(apiResponse.isSuccess() ? 201 : 409).body(apiResponse);
+    public ResponseEntity<?> saveUserRating(@RequestBody RatingDto ratingDto) {
+
+        boolean isRated = ratingsRepository.findRatingsByRaterIdAndUserId(ratingDto.getRater_id(), ratingDto.getUser_id());
+
+        if (!isRated ) {
+            ApiResponse<?> apiResponse = ratingService.saveRating(ratingDto);
+            return ResponseEntity
+                    .status(apiResponse.isSuccess() ? 201 : 409)
+                    .body(apiResponse);
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("The Rater is already has rated this User!");
+        }
     }
 
 }

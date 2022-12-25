@@ -8,24 +8,24 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "ratings")
+@Entity(name = "comments")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class Ratings {
+public class Comments {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer rate;
+    private String text;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
     private Users user;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
-    private Users rater;
+    private Users commenter;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;

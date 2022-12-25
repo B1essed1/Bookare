@@ -12,8 +12,6 @@ import com.example.bookare.services.RatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class RatingServiceImpl implements RatingService {
@@ -27,6 +25,7 @@ public class RatingServiceImpl implements RatingService {
         Ratings rating = new Ratings();
 
         Integer maxRating = 5; //rating maximum 5ga teng bo'lishi kerak
+        String myMessage = "Rating Saved!";
         Long user_id = ratingDto.getUser_id();
         Long rater_id = ratingDto.getRater_id();
 
@@ -38,37 +37,32 @@ public class RatingServiceImpl implements RatingService {
                 .findById(user_id)
                 .orElseThrow(() -> new ResourceNotFoundException("user", "id", user_id));
 
-        boolean isRated = ratingsRepository
-                .findRatingsByRaterIdAndUserId(rater_id, user_id); //userga aynan shu rater tomonidan avval rate berilganmi yoki yo'qligini bazadan qidiradi
-
-        if (!isRated && ratingDto.getRating() <= maxRating) { //agar ushbu id(user_id) lik userga shu id(rater_id) lik rater tomonidan avval rating berilmagan bo'lsa va rating 5 dan kichik bo'lsa save qiladi
+        if (ratingDto.getRating() <= maxRating) {
             rating.setRater(rater);
             rating.setUser(user);
             rating.setRate(ratingDto.getRating());
-            if (rating.getComment() != null) {
-                rating.setComment(ratingDto.getComment());
+            if (ratingDto.getComment() != null) {
 
                 CommentDto commentDto = new CommentDto();
                 commentDto.setComment(ratingDto.getComment());
                 commentDto.setUser_id(user_id);
                 commentDto.setCommenter_id(rater_id);
                 commentService.saveComment(commentDto);
+
+                myMessage = "Rating and Comment saved!";
             }
-            Ratings save = ratingsRepository.save(rating);
+            Ratings saved = ratingsRepository.save(rating);
 
             return ApiResponse.builder()
-                    .data(save)
+                    .data(saved)
                     .success(true)
-                    .message("Comment Saved!")
+                    .message(myMessage)
                     .build();
-        } else { //aks holda message jo'natiladi
-
-            String warningMessage = "The rater with this id: " + rater_id
-                    + " is already have rated this user: %s !" + user_id;
-
+        } else {
+            myMessage = "Rating value must be 5 maximum!";
             return ApiResponse.builder()
                     .success(false)
-                    .message(warningMessage)
+                    .message(myMessage)
                     .build();
         }
     }
@@ -82,7 +76,7 @@ public class RatingServiceImpl implements RatingService {
         return ApiResponse.builder()
                 .data(user_rating)
                 .success(true)
-                .message("OneUserRating")
+                .message("OneUserRating ")
                 .build();
     }
 }
