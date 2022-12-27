@@ -7,4 +7,6 @@ import com.example.bookare.models.ResponseDto;
 public interface ReserveUsersService{
 
     public ResponseDto<UsersReserve> castToUsers(RegUserDto dto);
+
+
 }

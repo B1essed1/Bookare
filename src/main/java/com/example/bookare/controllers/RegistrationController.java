@@ -9,22 +9,25 @@ import com.example.bookare.repositories.UsersReserveRepository;
 import com.example.bookare.security.JwtTokenCreator;
 import com.example.bookare.services.ReserveUsersService;
 import com.example.bookare.services.UsersService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/reg/")
 public class RegistrationController {
@@ -33,6 +36,8 @@ public class RegistrationController {
     private final UsersReserveRepository reserveRepository;
     private final UsersService usersService;
     private final JavaMailSender javaMailSender;
+
+    private final JwtTokenCreator jwtTokenCreator;
 
     /**
      TODO
@@ -87,8 +92,20 @@ public class RegistrationController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("otp xato kiritilgan!");
         }
+    }
 
+    @GetMapping("refresh/token")
+    public void getRefreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        ResponseDto result = jwtTokenCreator.refreshTokens(request);
+
+        if (!result.getIsError()){
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), result.getData());
+        } else {
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), result.getMessage());
+        }
     }
 
 }

@@ -29,6 +29,10 @@ public class SecurityConfiguration  {
     private final AuthenticationManagerBuilder authenticationManager;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * TODO
+     * Security does not work need to be fix
+     * */
 
     private static final String[] PUBLIC_URLS = {
             "/v2/api-docs",
@@ -61,6 +65,7 @@ public class SecurityConfiguration  {
         http.csrf().and().cors().disable().
                 sessionManagement().sessionCreationPolicy(STATELESS).and()
                         .authorizeRequests()
+                .anyRequest().authenticated()
                                 .antMatchers(PUBLIC_URLS).permitAll()
                         .antMatchers("/api").hasAnyAuthority("USER","ADMIN").and()
                 .addFilter(new CustomAuthenticationFilter(authenticationManager.getOrBuild()))
