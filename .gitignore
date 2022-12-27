@@ -28,6 +28,15 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+prometheus
+prometheus_data
+grafana-storage
+.mvn
+.idea
+lib
+target
+mvnw
+mvnw.cmd
 
 ### VS Code ###
 .vscode/
