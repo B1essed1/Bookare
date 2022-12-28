@@ -31,7 +31,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public ResponseDto<Photo> getOne(Long id) {
-        Optional<Photo> optionalPhoto = photoRepository.findById(id);
+        Optional<Photo> optionalPhoto = photoRepository.findByIdAndActiveTrue(id);
         if (optionalPhoto.isPresent()) {
             LOGGER.info("GET PHOTO BY ID");
             return ResponseDto.<Photo>builder()
@@ -80,7 +80,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public ResponseDto<?> delete(Long id) {
-        Optional<Photo> optionalPhoto = photoRepository.findById(id);
+        Optional<Photo> optionalPhoto = photoRepository.findByIdAndActiveTrue(id);
         if (optionalPhoto.isEmpty()){
             LOGGER.error("PHOTO NOT FOUND");
             return ResponseDto.builder()
@@ -100,7 +100,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public ResponseDto<?> download(Long id) {
-        Optional<Photo> optionalPhoto = photoRepository.findById(id);
+        Optional<Photo> optionalPhoto = photoRepository.findByIdAndActiveTrue(id);
         if (optionalPhoto.isEmpty()){
             LOGGER.error("PHOTO NOT FOUND");
             return ResponseDto.builder()

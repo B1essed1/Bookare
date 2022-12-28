@@ -37,8 +37,12 @@ public class PhotoController {
     @GetMapping("/download/{id}")
     public ResponseEntity<?> download(@PathVariable Long id) {
         ResponseDto<?> response = photoService.download(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + photoService.getOne(id).getData().getName() + "\"");
-        return ResponseEntity.status(response.getIsError() ? 404 : 200).contentType(MediaType.APPLICATION_OCTET_STREAM).headers(headers).body(response);
+        if (response.getIsError()) {
+            return ResponseEntity.status(404).body(response);
+        } else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + photoService.getOne(id).getData().getName() + "\"");
+            return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM).body(response.getData());
+        }
     }
 }
