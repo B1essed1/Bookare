@@ -43,6 +43,4 @@ public class BookController {
         ResponseDto<?> response = bookService.delete(id);
         return ResponseEntity.ok(response);
     }
-
-
 }

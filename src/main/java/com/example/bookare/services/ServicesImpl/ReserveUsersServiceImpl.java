@@ -46,4 +46,9 @@ public class ReserveUsersServiceImpl implements ReserveUsersService {
 
        return response;
     }
+
+    @Override
+    public Optional<UsersReserve> save(UsersReserve reserve) {
+        return Optional.of(usersReserveRepository.save(reserve));
+    }
 }
