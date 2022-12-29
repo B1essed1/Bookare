@@ -37,4 +37,5 @@ lib
 target
 mvnw
 mvnw.cmd
+.env
 
