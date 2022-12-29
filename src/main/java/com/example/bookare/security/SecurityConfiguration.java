@@ -3,18 +3,15 @@ package com.example.bookare.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -23,16 +20,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfiguration  {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
-    private final AuthenticationManagerBuilder authenticationManager;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    /**
-     * TODO
-     * Security does not work need to be fix
-     * */
 
     private static final String[] PUBLIC_URLS = {
             "/v2/api-docs",
@@ -41,35 +33,33 @@ public class SecurityConfiguration  {
             "/swagger-ui.html",
             "/webjars/**",
             "/login",
-            "/api/reg/**"
+            "/api/reg/**",
     };
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers(PUBLIC_URLS);
-    }
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http)
-            throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .build();
+    @Override
+    public void configure(WebSecurity web){
+        web.ignoring().antMatchers(PUBLIC_URLS);
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .cors().and().authorizeRequests()
+                .antMatchers(PUBLIC_URLS).permitAll();
+        http.authorizeRequests().antMatchers("/api/**").hasAnyAuthority("USER");
+        http.sessionManagement().sessionCreationPolicy(STATELESS);
+        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
+        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
-
-        http.csrf().and().cors().disable().
-                sessionManagement().sessionCreationPolicy(STATELESS).and()
-                        .authorizeRequests()
-                .anyRequest().authenticated()
-                                .antMatchers(PUBLIC_URLS).permitAll()
-                        .antMatchers("/api").hasAnyAuthority("USER","ADMIN").and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManager.getOrBuild()))
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception{
+        return super.authenticationManagerBean();
     }
 }
