@@ -14,7 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableJpaRepositories("com.example.bookare.repositories")
 @SpringBootApplication
 @EnableSwagger2
-
 public class BookareApplication {
 
     public static void main(String[] args) {

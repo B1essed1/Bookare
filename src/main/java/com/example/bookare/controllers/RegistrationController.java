@@ -48,7 +48,6 @@ public class RegistrationController {
      */
 
 
-
     /***
      *  TODO
      * In order to start, used only required fields to implement registration
@@ -94,7 +93,9 @@ public class RegistrationController {
             }
 
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("otp xato kiritilgan!");
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body("otp xato kiritilgan!");
         }
     }
 
@@ -125,3 +126,4 @@ public class RegistrationController {
         return ResponseEntity.ok(confirmationDto);
     }
 }
+

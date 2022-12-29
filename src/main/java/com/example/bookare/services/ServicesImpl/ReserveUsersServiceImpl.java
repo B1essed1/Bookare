@@ -32,7 +32,8 @@ public class ReserveUsersServiceImpl implements ReserveUsersService {
 
            UsersReserve users = new UsersReserve();
            users.setEmail(dto.getEmail());
-           if (dto.getRole().isEmpty()) users.setRole("USER");
+           if (dto.getRole() == null)
+//               users.setRole("USER"); //set USER role by default 1-variant
            users.setRole(dto.getRole());
            users.setCreatedDate(new Date());
            users.setName(dto.getName());

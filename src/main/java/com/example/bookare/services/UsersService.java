@@ -2,6 +2,7 @@ package com.example.bookare.services;
 
 import com.example.bookare.entities.Users;
 import com.example.bookare.entities.UsersReserve;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
