@@ -3,19 +3,17 @@ package com.example.bookare.services.ServicesImpl;
 import com.example.bookare.entities.Roles;
 import com.example.bookare.entities.Users;
 import com.example.bookare.entities.UsersReserve;
+import com.example.bookare.models.LoginDto;
 import com.example.bookare.repositories.RolesRepository;
 import com.example.bookare.repositories.UsersRepository;
 import com.example.bookare.services.UsersService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +33,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final UsersRepository usersRepository;
     private final RolesRepository rolesRepository;
     private final PasswordEncoder passwordEncoder;
-
 
 
     @Override
@@ -91,5 +88,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public Optional<Users> getUsersByEmail(String email) {
         return usersRepository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<Users> findUserByEmailAndPassword(LoginDto loginDto) {
+        Optional<Users> loggedInUser  = usersRepository
+                .findByEmailAndPassword(loginDto.getEmail(), passwordEncoder.encode(loginDto.getPassword()));
+        return loggedInUser;
     }
 }

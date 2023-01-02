@@ -2,9 +2,7 @@ package com.example.bookare.controllers;
 
 import com.example.bookare.entities.Users;
 import com.example.bookare.entities.UsersReserve;
-import com.example.bookare.models.ConfirmRegDto;
-import com.example.bookare.models.RegUserDto;
-import com.example.bookare.models.ResponseDto;
+import com.example.bookare.models.*;
 import com.example.bookare.repositories.UsersReserveRepository;
 import com.example.bookare.security.JwtTokenCreator;
 import com.example.bookare.services.ReserveUsersService;
@@ -41,19 +39,6 @@ public class RegistrationController {
     private final JavaMailSender javaMailSender;
 
     private final JwtTokenCreator jwtTokenCreator;
-
-    /**
-     TODO
-     Messages should be externalized and translated in two languages ENG/RU
-     */
-
-
-    /***
-     *  TODO
-     * In order to start, used only required fields to implement registration
-     * Should update when changes will be done!
-     * */
-
 
     @PostMapping("registration")
     @Transactional
@@ -115,15 +100,19 @@ public class RegistrationController {
 
     @GetMapping("/resend/otp")
     public ResponseEntity<?> resendOtp(@RequestBody ConfirmRegDto confirmRegDto) {
-        ConfirmRegDto confirmationDto = new ConfirmRegDto();
-        UsersReserve usersReserve = reserveRepository.findUsersReserveByEmail(confirmRegDto.getEmail()).get();
-        Random random = new Random();
-        Integer otp = random.nextInt(8999) + 1000;
-        usersReserve.setOtp(otp);
-        reserveUsersService.save(usersReserve);
-        confirmationDto.setEmail(confirmRegDto.getEmail());
-        confirmationDto.setOtp(otp);
-        return ResponseEntity.ok(confirmationDto);
+        ApiResponse  response = reserveUsersService.resendOtp(confirmRegDto);
+        if (response.isSuccess()){
+            return ResponseEntity.ok(response.getData());
+        } else return ResponseEntity.status(HttpStatus.CONFLICT).body(response.getMessage());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login ( LoginDto loginDto){
+        Optional<Users> loggedInUser = usersService.findUserByEmailAndPassword(loginDto);
+        if (loggedInUser.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bunday foydalanuvchi mavjud emas, login parolingizni tekshirib qaytadan urinib ko'ring");
+        }
+        return ResponseEntity.ok(JwtTokenCreator.createJwtToken(loggedInUser.get()));
     }
 }
 

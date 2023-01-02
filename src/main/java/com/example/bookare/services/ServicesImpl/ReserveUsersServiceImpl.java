@@ -2,6 +2,8 @@ package com.example.bookare.services.ServicesImpl;
 
 import com.example.bookare.entities.Users;
 import com.example.bookare.entities.UsersReserve;
+import com.example.bookare.models.ApiResponse;
+import com.example.bookare.models.ConfirmRegDto;
 import com.example.bookare.models.RegUserDto;
 import com.example.bookare.models.ResponseDto;
 import com.example.bookare.repositories.UsersReserveRepository;
@@ -51,5 +53,27 @@ public class ReserveUsersServiceImpl implements ReserveUsersService {
     @Override
     public Optional<UsersReserve> save(UsersReserve reserve) {
         return Optional.of(usersReserveRepository.save(reserve));
+    }
+
+    @Transactional
+    public ApiResponse<?> resendOtp( ConfirmRegDto confirmRegDto){
+        ApiResponse apiResponse = new ApiResponse();
+        try {
+            ConfirmRegDto confirmationDto = new ConfirmRegDto();
+            UsersReserve usersReserve = usersReserveRepository.findUsersReserveByEmail(confirmRegDto.getEmail()).get();
+            Random random = new Random();
+            Integer otp = random.nextInt(8999) + 1000;
+            usersReserve.setOtp(otp);
+            usersReserveRepository.save(usersReserve);
+            confirmationDto.setEmail(confirmRegDto.getEmail());
+            confirmationDto.setOtp(otp);
+
+            apiResponse.setData(confirmationDto);
+            apiResponse.setSuccess(true);
+        } catch (Exception e){
+            apiResponse.setSuccess(false);
+            apiResponse.setMessage(e.getMessage());
+        }
+        return apiResponse;
     }
 }
