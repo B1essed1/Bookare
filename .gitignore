@@ -38,4 +38,4 @@ target
 mvnw
 mvnw.cmd
 .env
-
+.gitignore
