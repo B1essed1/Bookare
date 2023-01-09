@@ -15,10 +15,11 @@ import java.util.List;
 
 import static com.example.bookare.utils.SwaggerConstants.*;
 import static java.util.Collections.singletonList;
+
 @Configuration
 public class SwaggerConfiguration {
     @Bean
-    public Docket apiDocket(){
+    public Docket apiDocket() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).forCodeGeneration(true)
                 .securityContexts(singletonList(securityContext()))
                 .securitySchemes(singletonList(apiKey())).select()
@@ -27,25 +28,25 @@ public class SwaggerConfiguration {
                 .tags(new Tag(API_TAG, "All APIs relating to this projects"));
     }
 
-    private ApiInfo apiInfo(){
-        return new ApiInfo(API_TITLE, API_DESCRIPTION,API_VERSION, TERMS_OF_SERVICE,contact(),LICENSE,LICENSE_URL, Collections.emptyList());
+    private ApiInfo apiInfo() {
+        return new ApiInfo(API_TITLE, API_DESCRIPTION, API_VERSION, TERMS_OF_SERVICE, contact(), LICENSE, LICENSE_URL, Collections.emptyList());
     }
 
-    private Contact contact(){
-        return new Contact(CONTACT_NAME,CONTACT_URL,CONTACT_EMAIL);
+    private Contact contact() {
+        return new Contact(CONTACT_NAME, CONTACT_URL, CONTACT_EMAIL);
     }
 
-    private ApiKey apiKey(){
-        return new ApiKey(SECURITY_REFERENCE,AUTHORIZATION, SecurityScheme.class.getName());
+    private ApiKey apiKey() {
+        return new ApiKey(SECURITY_REFERENCE, AUTHORIZATION, SecurityScheme.class.getName());
     }
 
-    private SecurityContext securityContext(){
+    private SecurityContext securityContext() {
         return SecurityContext.builder().securityReferences(securityReference()).build();
     }
 
-    private List<SecurityReference> securityReference(){
-        AuthorizationScope[] authorizationScopes= {new AuthorizationScope(AUTHORIZATION_SCOPE,AUTHORIZATION_DESCRIPTION)};
-        return singletonList(new SecurityReference(SECURITY_REFERENCE,authorizationScopes));
+    private List<SecurityReference> securityReference() {
+        AuthorizationScope[] authorizationScopes = {new AuthorizationScope(AUTHORIZATION_SCOPE, AUTHORIZATION_DESCRIPTION)};
+        return singletonList(new SecurityReference(SECURITY_REFERENCE, authorizationScopes));
     }
 
 }
