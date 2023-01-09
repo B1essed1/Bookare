@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -98,7 +96,7 @@ public class RegistrationController {
         }
     }
 
-    @GetMapping("/resend/otp")
+    @PostMapping("/resend/otp")
     public ResponseEntity<?> resendOtp(@RequestBody ConfirmRegDto confirmRegDto) {
         ApiResponse  response = reserveUsersService.resendOtp(confirmRegDto);
         if (response.isSuccess()){
