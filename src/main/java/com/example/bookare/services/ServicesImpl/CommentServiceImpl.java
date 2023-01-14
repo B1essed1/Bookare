@@ -12,6 +12,7 @@ import com.example.bookare.services.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +38,8 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setCommenter(commenter);
         comment.setUser(user);
-        comment.setText(comment.getText());
+        comment.setText(commentDto.getComment());
+        comment.setDate(new Date());
         Comments saved = commentRepository.save(comment);
 
         return ApiResponse.builder()
