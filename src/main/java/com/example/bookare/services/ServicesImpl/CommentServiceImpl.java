@@ -1,11 +1,10 @@
 package com.example.bookare.services.ServicesImpl;
 
 import com.example.bookare.entities.Comments;
-import com.example.bookare.entities.Ratings;
 import com.example.bookare.entities.Users;
 import com.example.bookare.exceptions.ResourceNotFoundException;
-import com.example.bookare.models.ApiResponse;
 import com.example.bookare.models.CommentDto;
+import com.example.bookare.models.ResponseDto;
 import com.example.bookare.repositories.CommentsRepository;
 import com.example.bookare.repositories.UsersRepository;
 import com.example.bookare.services.CommentService;
@@ -21,7 +20,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentsRepository commentRepository;
 
     @Override
-    public ApiResponse<?> saveComment(CommentDto commentDto) {
+    public ResponseDto<?> saveComment(CommentDto commentDto) {
 
         Comments comment = new Comments();
         Long commenter_id = commentDto.getCommenter_id();
@@ -40,9 +39,9 @@ public class CommentServiceImpl implements CommentService {
         comment.setText(comment.getText());
         Comments saved = commentRepository.save(comment);
 
-        return ApiResponse.builder()
+        return ResponseDto.builder()
                 .data(saved)
-                .success(true)
+                .isError(false)
                 .message("Comment Saved! ")
                 .build();
     }

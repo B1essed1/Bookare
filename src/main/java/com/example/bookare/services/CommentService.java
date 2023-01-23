@@ -1,8 +1,8 @@
 package com.example.bookare.services;
 
-import com.example.bookare.models.ApiResponse;
 import com.example.bookare.models.CommentDto;
+import com.example.bookare.models.ResponseDto;
 
 public interface CommentService {
-    ApiResponse<?> saveComment(CommentDto commentDto);
+    ResponseDto<?> saveComment(CommentDto commentDto);
 }

@@ -15,8 +15,10 @@ import com.example.bookare.repositories.UsersRepository;
 import com.example.bookare.services.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookServiceImpl implements BookService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceImpl.class);
@@ -185,6 +188,7 @@ public class BookServiceImpl implements BookService {
                 .isError(false)
                 .build();
     }
+
 
     public String upload(MultipartFile multipartFile, String fileName) throws IOException {
         BlobClient blob = blobContainerClient.getBlobClient(fileName);

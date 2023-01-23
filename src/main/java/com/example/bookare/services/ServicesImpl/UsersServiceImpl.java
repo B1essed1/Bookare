@@ -1,5 +1,6 @@
 package com.example.bookare.services.ServicesImpl;
 
+import com.example.bookare.entities.Photo;
 import com.example.bookare.entities.Roles;
 import com.example.bookare.entities.Users;
 import com.example.bookare.entities.UsersReserve;
@@ -65,6 +66,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         users.setPassword(reserve.getPassword());
 
         Optional<Roles> roles = rolesRepository.findByRole(reserve.getRole());
+
+        Photo photo = reserve.getPhoto();
+        users.setProfilePhoto(photo);
 
         if (roles.isPresent()) {
             users.setRoles(Collections.singletonList(roles.get()));

@@ -31,4 +31,11 @@ public class UsersReserve {
     private String email;
     private  String role = "USER";
 
+    private String districtName;
+    private String quartersName;
+    private String regionsName;
+
+    @OneToOne
+    private Photo photo;
+
 }

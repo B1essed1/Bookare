@@ -18,7 +18,6 @@ public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String surname;
     private String password;
@@ -37,6 +36,9 @@ public class Users implements UserDetails {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id") })
     Collection<Roles> roles = new ArrayList<>();
+
+    @OneToOne
+    private Photo profilePhoto;
 
 
     @Override

@@ -22,4 +22,5 @@ public class Photo {
 
     @ManyToOne
     private Book book;
+
 }

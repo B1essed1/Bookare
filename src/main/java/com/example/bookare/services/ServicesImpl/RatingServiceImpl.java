@@ -3,9 +3,9 @@ package com.example.bookare.services.ServicesImpl;
 import com.example.bookare.entities.Ratings;
 import com.example.bookare.entities.Users;
 import com.example.bookare.exceptions.ResourceNotFoundException;
-import com.example.bookare.models.ApiResponse;
 import com.example.bookare.models.CommentDto;
 import com.example.bookare.models.RatingDto;
+import com.example.bookare.models.ResponseDto;
 import com.example.bookare.repositories.RatingsRepository;
 import com.example.bookare.repositories.UsersRepository;
 import com.example.bookare.services.RatingService;
@@ -21,7 +21,7 @@ public class RatingServiceImpl implements RatingService {
     private final CommentServiceImpl commentService;
 
     @Override
-    public ApiResponse<?> saveRating(RatingDto ratingDto) {
+    public ResponseDto<?> saveRating(RatingDto ratingDto) {
         Ratings rating = new Ratings();
 
         Integer maxRating = 5; //rating maximum 5ga teng bo'lishi kerak
@@ -53,29 +53,29 @@ public class RatingServiceImpl implements RatingService {
             }
             Ratings saved = ratingsRepository.save(rating);
 
-            return ApiResponse.builder()
+            return ResponseDto.builder()
                     .data(saved)
-                    .success(true)
+                    .isError(true)
                     .message(myMessage)
                     .build();
         } else {
             myMessage = "Rating value must be 5 maximum!";
-            return ApiResponse.builder()
-                    .success(false)
+            return ResponseDto.builder()
+                    .isError(false)
                     .message(myMessage)
                     .build();
         }
     }
 
     @Override
-    public ApiResponse<?> getOneUserRating(Long user_id) {
+    public ResponseDto<?> getOneUserRating(Long user_id) {
         float user_rating = (float) ratingsRepository
                 .getUserRating(user_id)
                 .orElseThrow(() -> new ResourceNotFoundException("user", "id", user_id));
 
-        return ApiResponse.builder()
+        return ResponseDto.builder()
                 .data(user_rating)
-                .success(true)
+                .isError(true)
                 .message("OneUserRating ")
                 .build();
     }

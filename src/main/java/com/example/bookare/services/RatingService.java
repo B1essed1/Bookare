@@ -1,10 +1,11 @@
 package com.example.bookare.services;
 
-import com.example.bookare.models.ApiResponse;
 import com.example.bookare.models.RatingDto;
+import com.example.bookare.models.ResponseDto;
+import io.swagger.models.Response;
 
 public interface RatingService {
-    ApiResponse<?> saveRating(RatingDto rating);
+    ResponseDto<?> saveRating(RatingDto rating);
 
-    ApiResponse<?> getOneUserRating(Long user_id);
+    ResponseDto<?> getOneUserRating(Long user_id);
 }

@@ -1,7 +1,7 @@
 package com.example.bookare.controllers;
 
-import com.example.bookare.models.ApiResponse;
 import com.example.bookare.models.RatingDto;
+import com.example.bookare.models.ResponseDto;
 import com.example.bookare.repositories.RatingsRepository;
 import com.example.bookare.services.ServicesImpl.RatingServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ public class RatingController {
 
     @GetMapping("{id}")
     public ResponseEntity<?> getOneUserRating(@PathVariable Long id) {
-        ApiResponse<?> userRating = ratingService.getOneUserRating(id);
-        return new ResponseEntity<>(userRating, HttpStatus.OK);
+        ResponseDto<?> userRating = ratingService.getOneUserRating(id);
+        return new ResponseEntity<>(userRating.getData(), HttpStatus.OK);
     }
 
     @PostMapping("saveRating")
@@ -29,15 +29,14 @@ public class RatingController {
         boolean isRated = ratingsRepository.findRatingsByRaterIdAndUserId(ratingDto.getRater_id(), ratingDto.getUser_id());
 
         if (!isRated ) {
-            ApiResponse<?> apiResponse = ratingService.saveRating(ratingDto);
+            ResponseDto<?> apiResponse = ratingService.saveRating(ratingDto);
             return ResponseEntity
-                    .status(apiResponse.isSuccess() ? 201 : 409)
+                    .status(!apiResponse.getIsError() ? 201 : 409)
                     .body(apiResponse);
         } else {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body("The Rater is already has rated this User!");
+                    .body("You already has rated this User!");
         }
     }
-
 }
