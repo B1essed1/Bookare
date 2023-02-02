@@ -27,4 +27,7 @@ public class Address{
     private String quartersNameKrill;
     @Column(nullable = false)
     private String regionsNameKrill;
+
+    @OneToOne
+    private Users users;
 }

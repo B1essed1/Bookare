@@ -28,8 +28,10 @@ services:
     ports:
       - "9092:9090"
     volumes:
-      - ./prometheus:/etc/prometheus/prometheus.yaml
-      - ./prometheus_data:/prometheus
+      - ./prometheus:/etc/prometheus_config/prometheus.yaml
+      - ./prometheus_data:/prometheus_data/data
+      - ./prometheus_data:/prometheus_data/data/queries.active
+
     command:
         - '--config.file=/etc/prometheus/prometheus.yml'
 
@@ -39,13 +41,16 @@ services:
     #network_mode: host
     container_name: bookare-grafana
     restart: unless-stopped
-    user: "472"
+    user: "1001"
     ports:
       - "3003:3000"
     links:
       - prometheus:prometheus
     volumes:
-      - ./grafana-storage:/var/lib/grafana
+      - grafana-storage:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_SERVER_DOMAIN=localhost
+
+volumes:
+  grafana-storage:

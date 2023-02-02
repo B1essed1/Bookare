@@ -15,7 +15,7 @@ public class SwaggerConstants {
     public static final String  SECURE_PATH ="/*/.*";
 
     public static final String ACTUATOR_PATH = "/actuator/**";
-    public static final String  API_TAG = "billing system ";
+    public static final String  API_TAG = "Bookaren  ";
     public static final String  CONTACT_URL = "https:/t.me/b1essed1";
     public static final String  AUTHORIZATION = "Authorization";
 }

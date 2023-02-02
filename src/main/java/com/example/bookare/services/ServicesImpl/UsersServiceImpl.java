@@ -1,14 +1,11 @@
 package com.example.bookare.services.ServicesImpl;
 
-import com.example.bookare.entities.Photo;
-import com.example.bookare.entities.Roles;
-import com.example.bookare.entities.Users;
-import com.example.bookare.entities.UsersReserve;
+import com.example.bookare.entities.*;
 import com.example.bookare.models.LoginDto;
+import com.example.bookare.repositories.AddressRepository;
 import com.example.bookare.repositories.RolesRepository;
 import com.example.bookare.repositories.UsersRepository;
 import com.example.bookare.services.UsersService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -27,13 +24,21 @@ import java.util.Optional;
 import static com.example.bookare.utils.Constants.USERNAME_NOT_FOUND;
 
 @Service
-@AllArgsConstructor
 @Slf4j
-public class UsersServiceImpl implements UsersService, UserDetailsService {
+    public class UsersServiceImpl implements UsersService, UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final RolesRepository rolesRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AddressRepository addressRepository;
+
+    public UsersServiceImpl(UsersRepository usersRepository, RolesRepository rolesRepository,
+                            PasswordEncoder passwordEncoder, AddressRepository addressRepository) {
+        this.usersRepository = usersRepository;
+        this.rolesRepository = rolesRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.addressRepository = addressRepository;
+    }
 
 
     @Override
@@ -70,6 +75,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Photo photo = reserve.getPhoto();
         users.setProfilePhoto(photo);
 
+
+
+
         if (roles.isPresent()) {
             users.setRoles(Collections.singletonList(roles.get()));
         } else {
@@ -78,6 +86,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             Roles roles1 = rolesRepository.save(role);
             users.setRoles(Collections.singletonList(roles1));
         }
+        Address address = new Address();
+        address.setDistrictName(reserve.getDistrictName());
+        address.setRegionsName(reserve.getRegionsName());
+        address.setQuartersNameKrill(reserve.getQuartersName());
+        address.setUsers(users);
+        addressRepository.save(address);
         return users;
     }
 
