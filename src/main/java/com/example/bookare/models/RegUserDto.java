@@ -10,7 +10,7 @@ public class RegUserDto {
     private String surname;
     private String password;
     private String email;
-    private String role = "USER"; //set USER role by default 2-variant
+    private String role = "USER"; //set USER role by default
 //    private String role;
 
 

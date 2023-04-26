@@ -125,7 +125,6 @@ public class BookServiceImpl implements BookService {
                 .message("Book added")
                 .isError(false)
                 .build();
-
     }
 
     @Override

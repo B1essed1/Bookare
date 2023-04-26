@@ -1,12 +1,10 @@
 package com.example.bookare.controllers;
 
-import com.example.bookare.models.ApiResponse;
+import com.azure.core.annotation.Put;
 import com.example.bookare.models.RatingDto;
 import com.example.bookare.models.ResponseDto;
-import com.example.bookare.repositories.RatingsRepository;
 import com.example.bookare.services.ServicesImpl.RatingServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +35,12 @@ public class RatingController {
         return ResponseEntity
                 .status(apiResponse.getIsError() ? 409 : 201)
                 .body(apiResponse);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> updateRating(@PathVariable Long id, @RequestBody RatingDto ratingDto){
+        ResponseDto<?> response = ratingService.updateRating(id, ratingDto);
+        return ResponseEntity.status(response.getIsError() ? 200 : 404).body(response);
     }
 
     @DeleteMapping("{id}")

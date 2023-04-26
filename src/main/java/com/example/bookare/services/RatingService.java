@@ -12,4 +12,6 @@ public interface RatingService {
     ResponseDto<?> getOneUserRating(Long user_id);
 
     ResponseDto<?> deleteRating(Long rating_id);
+
+    ResponseDto<?> updateRating(Long rating_id, RatingDto ratingDto);
 }

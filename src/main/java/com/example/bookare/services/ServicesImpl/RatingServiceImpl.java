@@ -3,7 +3,6 @@ package com.example.bookare.services.ServicesImpl;
 import com.example.bookare.entities.Ratings;
 import com.example.bookare.entities.Users;
 import com.example.bookare.exceptions.ResourceNotFoundException;
-import com.example.bookare.models.ApiResponse;
 import com.example.bookare.models.CommentDto;
 import com.example.bookare.models.RatingDto;
 import com.example.bookare.models.ResponseDto;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -105,7 +105,7 @@ public class RatingServiceImpl implements RatingService {
         return ResponseDto.builder()
                 .data(user_rating)
                 .isError(false)
-                .message( "Rating of User with " + user_id + " id")
+                .message("Rating of User with " + user_id + " id")
                 .build();
     }
 
@@ -125,6 +125,36 @@ public class RatingServiceImpl implements RatingService {
         return ResponseDto.builder()
                 .message("Deleted!")
                 .isError(false)
+                .build();
+    }
+
+    @Override
+    public ResponseDto<?> updateRating(Long rating_id, RatingDto ratingDto) {
+
+        Optional<Ratings> byId = ratingsRepository.findById(rating_id);
+        Ratings rating = byId.get();
+
+        Long user_id = ratingDto.getUser_id();
+        Long rater_id = ratingDto.getRater_id();
+
+        Users rater = usersRepository
+                .findById(rater_id)
+                .orElseThrow(() -> new ResourceNotFoundException("rater", "id", rater_id));
+
+        Users user = usersRepository
+                .findById(user_id)
+                .orElseThrow(() -> new ResourceNotFoundException("user", "id", user_id));
+
+        rating.setRater(rater);
+        rating.setUser(user);
+        rating.setDate(new Date());
+        rating.setRate(rating.getRate());
+        Ratings saved = ratingsRepository.save(rating);
+
+        return ResponseDto.builder()
+                .message("Rating Updated!")
+                .isError(false)
+                .data(saved)
                 .build();
     }
 }
